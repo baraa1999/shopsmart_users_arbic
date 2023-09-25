@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shopsmart_users_arbic/consts/app_constants.dart';
 import 'package:shopsmart_users_arbic/services/my_app_method.dart';
 import 'package:shopsmart_users_arbic/widgets/subtitle_text.dart';
 
@@ -27,12 +28,9 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       _priceController,
       _descriptionController,
       _quantityController;
-
+  String? _categoryValue;
   @override
   void initState() {
-    // _categoryController = TextEditingController();
-    // _brandController = TextEditingController();
-
     _titleController = TextEditingController(text: "");
     _priceController = TextEditingController(text: "");
     _descriptionController = TextEditingController(text: "");
@@ -65,9 +63,16 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   }
 
   Future<void> _uploadProduct() async {
+    if (_categoryValue == null) {
+      MyAppMethods.showErrorORWarningDialog(
+        context: context,
+        subtitle: "Category is empty",
+        fct: () {},
+      );
+      return;
+    }
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-
     if (isValid) {}
   }
 
@@ -101,69 +106,69 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      bottomSheet: SizedBox(
-        height: kBottomNavigationBarHeight + 10,
-        child: Material(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(12),
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      10,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        bottomSheet: SizedBox(
+          height: kBottomNavigationBarHeight + 10,
+          child: Material(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(12),
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        10,
+                      ),
                     ),
                   ),
-                ),
-                icon: const Icon(Icons.clear),
-                label: const Text(
-                  "Clear",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                onPressed: () {},
-              ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(12),
-                  // backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      10,
+                  icon: const Icon(Icons.clear),
+                  label: const Text(
+                    "Clear",
+                    style: TextStyle(
+                      fontSize: 20,
                     ),
                   ),
+                  onPressed: () {},
                 ),
-                icon: const Icon(Icons.upload),
-                label: const Text(
-                  "Upload Product",
-                  style: TextStyle(
-                    fontSize: 20,
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(12),
+                    // backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        10,
+                      ),
+                    ),
                   ),
+                  icon: const Icon(Icons.upload),
+                  label: const Text(
+                    "Upload Product",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  onPressed: () {
+                    _uploadProduct();
+                  },
                 ),
-                onPressed: () {},
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const TitlesTextWidget(
-          label: "Upload a new product",
+        appBar: AppBar(
+          centerTitle: true,
+          title: const TitlesTextWidget(
+            label: "Upload a new product",
+          ),
         ),
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SafeArea(
+        body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -175,7 +180,16 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                 const SizedBox(
                   height: 25,
                 ),
-                //TODO: Add Choose Category Widget
+                DropdownButton<String>(
+                  hint: const Text("Select Category"),
+                  value: _categoryValue,
+                  items: AppConstants.categoriesDropDownList,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _categoryValue = value;
+                    });
+                  },
+                ),
                 const SizedBox(
                   height: 25,
                 ),
@@ -195,8 +209,6 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                           keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.newline,
                           decoration: const InputDecoration(
-                            filled: true,
-                            contentPadding: EdgeInsets.all(12),
                             hintText: 'Product Title',
                           ),
                           validator: (value) {
@@ -223,8 +235,6 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                   ),
                                 ],
                                 decoration: const InputDecoration(
-                                    filled: true,
-                                    contentPadding: EdgeInsets.all(12),
                                     hintText: 'Price',
                                     prefix: SubtitleTextWidget(
                                       label: "\$ ",
@@ -252,8 +262,6 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                 keyboardType: TextInputType.number,
                                 key: const ValueKey('Quantity'),
                                 decoration: const InputDecoration(
-                                  filled: true,
-                                  contentPadding: EdgeInsets.all(12),
                                   hintText: 'Qty',
                                 ),
                                 validator: (value) {
@@ -270,13 +278,11 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                         TextFormField(
                           key: const ValueKey('Description'),
                           controller: _descriptionController,
-                          minLines: 3,
+                          minLines: 5,
                           maxLines: 8,
                           maxLength: 1000,
                           textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
-                            filled: true,
-                            contentPadding: EdgeInsets.all(12),
                             hintText: 'Product description',
                           ),
                           validator: (value) {
@@ -291,10 +297,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: WidgetsBinding.instance.window.viewInsets.bottom > 0.0
-                      ? 10
-                      : kBottomNavigationBarHeight + 10,
+                const SizedBox(
+                  height: kBottomNavigationBarHeight + 10,
                 )
               ],
             ),
