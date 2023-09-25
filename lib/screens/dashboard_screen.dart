@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopsmart_admin_ar/widgets/title_text.dart';
+import 'package:shopsmart_users_arbic/widgets/title_text.dart';
 
 import '../models/dashboard_btn_model.dart';
 import '../providers/theme_provider.dart';

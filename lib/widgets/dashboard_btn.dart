@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopsmart_admin_ar/widgets/subtitle_text.dart';
+import 'package:shopsmart_users_arbic/widgets/subtitle_text.dart';
 
 class DashboardButtonsWidget extends StatelessWidget {
   const DashboardButtonsWidget(

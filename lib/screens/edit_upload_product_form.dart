@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shopsmart_admin_ar/services/my_app_method.dart';
-import 'package:shopsmart_admin_ar/widgets/subtitle_text.dart';
+import 'package:shopsmart_users_arbic/services/my_app_method.dart';
+import 'package:shopsmart_users_arbic/widgets/subtitle_text.dart';
 
 import '../consts/my_validators.dart';
 import '../widgets/title_text.dart';
